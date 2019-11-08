@@ -1,0 +1,22 @@
+for i=1:130
+Imagenes(:,:,:,i)=imresize(imadjust(imread(['Fotos/Jitomate/Jitomate',num2str(i), '.png']),[.2 .3 0; .6 .7 1],[]),[28,28]) ;
+referencia{i}='Jitomate';
+end
+for i=131:370
+Imagenes(:,:,:,i)=imresize(imadjust(imread(['Fotos/Nitrogeno/Nitrogeno',num2str(i), '.png']),[.2 .3 0; .6 .7 1],[]),[28,28]) ;
+referencia{i}='Nitrogeno';
+end
+for i=371:490
+Imagenes(:,:,:,i)=imresize(imadjust(imread(['Fotos/Fosforo/Fosforo',num2str(i), '.png']),[.2 .3 0; .6 .7 1],[]),[28,28]);
+referencia{i}='Fosforo';
+end
+for i=491:680
+Imagenes(:,:,:,i)=imresize(imadjust(imread(['Fotos/Potasio/Potasio',num2str(i), '.png']),[.2 .3 0; .6 .7 1],[]),[28,28]) ;
+referencia{i}='Potasio';
+end
+
+referencias=categorical(referencia);
+
+save ('BasedeDatos3.mat','Imagenes','referencias');
+
+load ('BasedeDatos3.mat');
