@@ -1,0 +1,14 @@
+camList = webcamlist;
+cam = webcam(1);
+preview(cam);
+
+    img = snapshot(cam);
+    image(img);
+     
+clear cam
+
+load('Resultados_internet_contraste.mat','net')
+
+Imagen(:,:,:,1)=imresize(imadjust(img,[.2 .3 0; .6 .7 1],[]),[28,28]) ;
+
+YPred = classify(net,Imagen)
