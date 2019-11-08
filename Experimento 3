@@ -1,0 +1,66 @@
+load ('BasedeDatos2.mat');
+imds=Imagenes;
+figure;
+
+for i = 1:20
+    subplot(4,5,i);
+    imshow(imds(:,:,:,randperm(i,1)));
+end
+img_size= size(imds);
+[trainInd, ~, ~] = dividerand (img_size(4),0.7,0.0,0.3);
+
+training.images = imds(:,:,:,trainInd);
+training.target = referencias(trainInd);
+
+load ('BasedeDatos.mat');
+imds1=Imagenes;
+img_size1= size(imds1);
+[~, ~, testInd] = dividerand (img_size1(4),0.7,0.0,0.3);
+testing.images = imds1(:,:,:,testInd);
+testing.target = referencias(testInd);
+
+
+layers = [
+    imageInputLayer([28 28 3])
+    
+    convolution2dLayer(3,8,'Padding','same')
+    batchNormalizationLayer
+    reluLayer
+    
+    maxPooling2dLayer(2,'Stride',2)
+    
+    convolution2dLayer(3,16,'Padding','same')
+    batchNormalizationLayer
+    reluLayer
+    
+    maxPooling2dLayer(2,'Stride',2)
+    
+    convolution2dLayer(3,32,'Padding','same')
+    batchNormalizationLayer
+    reluLayer
+    
+    fullyConnectedLayer(4)
+    softmaxLayer
+    classificationLayer];
+
+
+options = trainingOptions('sgdm', ...
+    'InitialLearnRate',0.01, ...
+    'MaxEpochs',250, ...
+    'Shuffle','every-epoch', ...
+    'ValidationFrequency',30, ...
+    'Verbose',false, ...
+    'MiniBatchSize',16,...
+    'Plots','training-progress');
+
+net = trainNetwork(training.images,training.target,layers,options);
+
+
+YPred = classify(net,testing.images);
+
+accuracy = sum(YPred == testing.target')/numel(testing.target)
+
+YPred1 = classify(net,training.images);
+accuracy1 = sum(YPred1 == training.target')/numel(training.target)
+
+save('Resultados_internet.mat')
